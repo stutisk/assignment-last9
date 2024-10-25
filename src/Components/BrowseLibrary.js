@@ -61,7 +61,7 @@ const BrowseLibrary = () => {
                       (exporter) => exporter.slug
                     ) || [];
                     const rulesCount = rules.length;
-                    {console.log(slug);}
+             
 
                     return (
                      <Card

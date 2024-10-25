@@ -1,26 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
-import { Navbar } from './Components/Navbar/Navbar';
-import BrowseLibrary from './Components/BrowseLibrary';
-import SearchBar from './Components/SearchBar';
-import { DataProvider } from './Components/DataContext';
+import "./App.css";
+import { Navbar } from "./Components/Navbar/Navbar";
+import BrowseLibrary from "./Components/BrowseLibrary";
+
+import { DataProvider } from "./Components/DataContext";
 
 function App() {
-
-
-  
   return (
     <DataProvider>
-    <div className="App ">
-      <Navbar/>
+      <div className="App ">
+        <Navbar />
 
-
-   
-      <BrowseLibrary/>
-
-    </div>
+        <BrowseLibrary />
+      </div>
     </DataProvider>
-
   );
 }
 
