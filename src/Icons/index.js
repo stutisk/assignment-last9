@@ -9,6 +9,7 @@ import { SiNetdata } from "react-icons/si";
 import { SiMysql } from "react-icons/si";
 import { SiPostgresql } from "react-icons/si";
 import { SiMicrosoftsqlserver } from "react-icons/si";
+import { FaCheckCircle } from "react-icons/fa";
 
 
 export {
@@ -21,6 +22,7 @@ export {
   SiNetdata,
   SiMysql,
   SiPostgresql,
-  SiMicrosoftsqlserver
+  SiMicrosoftsqlserver,
+  FaCheckCircle
 
 };

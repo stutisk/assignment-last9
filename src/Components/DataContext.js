@@ -2,13 +2,12 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import yaml from 'js-yaml';
 
-// Create a context
+
 const DataContext = createContext();
 
-// Create a custom hook for easy access to the context
+
 export const useData = () => useContext(DataContext);
 
-// Create a provider component
 export const DataProvider = ({ children }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);

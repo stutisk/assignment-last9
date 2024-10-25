@@ -33,8 +33,8 @@ const BrowseLibrary = () => {
 
   const { data } = useData();
 
-  const handleViewRules = (serviceName, rulesCount, rules,slug) => {
-    setSelectedService({ serviceName, rulesCount, rules ,slug});
+  const handleViewRules = (serviceName, rulesCount, rules,slug,icon) => {
+    setSelectedService({ serviceName, rulesCount, rules ,slug,icon});
     setIsModalOpen(true);
   };
 
@@ -64,13 +64,21 @@ const BrowseLibrary = () => {
                     {console.log(slug);}
 
                     return (
-                      <Card
+                     <Card
                         key={index}
                         rules={rules}
                         title={serviceName.name}
                         rulesCount={rulesCount}
                         onViewRules={() =>
-                          handleViewRules(serviceName.name, rulesCount, rules,slug)
+                          handleViewRules(
+                            serviceName.name,
+                            rulesCount,
+                            rules,
+                            slug,
+                            serviceIcons[serviceName.name] || (
+                              <GiJigsawPiece className="text-slate-400" />
+                            )
+                          )
                         }
                         icon={
                           serviceIcons[serviceName.name] || (
@@ -78,6 +86,7 @@ const BrowseLibrary = () => {
                           )
                         }
                       />
+
                     );
                   })}
                 </div>
@@ -91,6 +100,7 @@ const BrowseLibrary = () => {
           rulesCount={selectedService.rulesCount}
           rules={selectedService.rules}
           slug={selectedService.slug}
+          icon = {selectedService.icon}
         />
       </div>
     </div>
