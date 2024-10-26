@@ -30,20 +30,19 @@ const serviceIcons = {
 const BrowseLibrary = () => {
   const [selectedService, setSelectedService] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { data } = useData();
 
-  const handleViewRules = (serviceName, rulesCount, rules,slug,icon) => {
-    setSelectedService({ serviceName, rulesCount, rules ,slug,icon});
+  const handleViewRules = (serviceName, rulesCount, rules, slug, icon) => {
+    setSelectedService({ serviceName, rulesCount, rules, slug, icon });
     setIsModalOpen(true);
   };
 
-  console.log(data?.groups);
-
   return (
-    <div className="lg:px-32 mt-12 flex flex-col gap-6">
+    <div className="lg:px-32  px-6 mt-12 flex flex-col gap-6">
       <p className="text-xl font-medium text-slate-600">Browse Library</p>
-      <SearchBar />
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <div className="min-h-screen">
         <div>
           {data?.groups?.length &&
@@ -53,42 +52,49 @@ const BrowseLibrary = () => {
                   {alert.name}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {alert?.services?.slice(0, 8).map((serviceName, index) => {
-                    const rules = serviceName?.exporters?.flatMap(
-                      (exporter) => exporter.rules
-                    ) || [];
-                    const slug = serviceName?.exporters?.flatMap(
-                      (exporter) => exporter.slug
-                    ) || [];
-                    const rulesCount = rules.length;
-             
+                  {alert.services
+                    .filter((serviceName) =>
+                      serviceName.name
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    )
+                    .slice(0, 8)
+                    .map((serviceName, index) => {
+                      const rules =
+                        serviceName?.exporters?.flatMap(
+                          (exporter) => exporter.rules
+                        ) || [];
+                      const slug =
+                        serviceName?.exporters?.flatMap(
+                          (exporter) => exporter.slug
+                        ) || [];
+                      const rulesCount = rules.length;
 
-                    return (
-                     <Card
-                        key={index}
-                        rules={rules}
-                        title={serviceName.name}
-                        rulesCount={rulesCount}
-                        onViewRules={() =>
-                          handleViewRules(
-                            serviceName.name,
-                            rulesCount,
-                            rules,
-                            slug,
+                      return (
+                        <Card
+                          key={index}
+                          rules={rules}
+                          title={serviceName.name}
+                          rulesCount={rulesCount}
+                          onViewRules={() =>
+                            handleViewRules(
+                              serviceName.name,
+                              rulesCount,
+                              rules,
+                              slug,
+                              serviceIcons[serviceName.name] || (
+                                <GiJigsawPiece className="text-slate-400" />
+                              )
+                            )
+                          }
+                          icon={
                             serviceIcons[serviceName.name] || (
                               <GiJigsawPiece className="text-slate-400" />
                             )
-                          )
-                        }
-                        icon={
-                          serviceIcons[serviceName.name] || (
-                            <GiJigsawPiece className="text-slate-400" />
-                          )
-                        }
-                      />
-
-                    );
-                  })}
+                          }
+                        />
+                      );
+                    })}
                 </div>
               </div>
             ))}
@@ -100,7 +106,7 @@ const BrowseLibrary = () => {
           rulesCount={selectedService.rulesCount}
           rules={selectedService.rules}
           slug={selectedService.slug}
-          icon = {selectedService.icon}
+          icon={selectedService.icon}
         />
       </div>
     </div>

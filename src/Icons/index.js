@@ -10,6 +10,8 @@ import { SiMysql } from "react-icons/si";
 import { SiPostgresql } from "react-icons/si";
 import { SiMicrosoftsqlserver } from "react-icons/si";
 import { FaCheckCircle } from "react-icons/fa";
+import { RxCrossCircled } from "react-icons/rx";
+import { BiSolidError } from "react-icons/bi";
 
 
 export {
@@ -23,6 +25,8 @@ export {
   SiMysql,
   SiPostgresql,
   SiMicrosoftsqlserver,
-  FaCheckCircle
+  FaCheckCircle,
+  RxCrossCircled,
+  BiSolidError 
 
 };

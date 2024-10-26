@@ -1,7 +1,7 @@
 import React from "react";
 
 const Card = ({ title, rules, rulesCount, onViewRules, icon }) => {
-  console.log(rules);
+
   return (
     <div className="bg-white p-8  rounded-lg flex flex-col justify-between border-2 border-slate-100">
       <div>
@@ -15,9 +15,9 @@ const Card = ({ title, rules, rulesCount, onViewRules, icon }) => {
             {rulesCount} {rulesCount > 1 ? "RULES" : "RULE"}
           </span>
 
-          {rules.map((rule, index) => (
+          {rules?.map((rule, index) => (
             <span key={index}>
-              {rule.name}
+              {rule?.name}
               {" ,"}
             </span>
           ))}

@@ -1,34 +1,49 @@
 import React, { useEffect, useState } from "react";
 import yaml from "js-yaml";
-import { FaCheckCircle } from "../Icons/index";
+import { FaCheckCircle, RxCrossCircled, BiSolidError } from "../Icons/index";
 
-export const RulesModal = ({ isOpen, onClose, serviceName, rulesCount, slug , icon,}) => {
+export const RulesModal = ({
+  isOpen,
+  onClose,
+  serviceName,
+  rulesCount,
+  slug,
+  icon,
+}) => {
   const [rulesData, setrulesData] = useState([]);
   const [showToast, setShowToast] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchRuleData = async () => {
       if (isOpen && serviceName && slug) {
         setIsLoading(true);
+        setError(""); 
         try {
           const formattedServiceName = serviceName.replace(/\s+/g, "-").toLowerCase();
           const response = await fetch(
             `https://raw.githubusercontent.com/samber/awesome-prometheus-alerts/master/dist/rules/${formattedServiceName}/${slug}.yml`
           );
+          if (!response.ok) {
+            throw new Error("Failed to fetch data.");
+          }
           const yamlText = await response.text();
           const data = yaml.load(yamlText);
           const rulesData = data?.groups?.[0]?.rules;
-          setrulesData(rulesData);
+          setrulesData(rulesData || []); 
         } catch (error) {
           console.error("Error fetching or parsing rule data:", error);
+          setError("Something Went Wrong Try Again Later!");
         } finally {
           setIsLoading(false);
+          
         }
       }
     };
     fetchRuleData();
   }, [isOpen, serviceName, slug]);
+  
 
   const handleCopy = (rule) => {
     const textToCopy = `
@@ -64,18 +79,16 @@ export const RulesModal = ({ isOpen, onClose, serviceName, rulesCount, slug , ic
           className="absolute top-4 right-8 text-gray-400 text-3xl font-extralight"
           onClick={onClose}
         >
-          &times;
+          <RxCrossCircled />
         </button>
 
         <div className="flex gap-2.5 border-b-2 border-b-slate-200 px-4 py-6 sm:px-8">
-         
-        <div className="text-2xl flex self-baseline">{icon}</div>
-         
+          <div className="text-2xl flex self-baseline">{icon}</div>
           <p className="text-lg sm:text-xl font-semibold text-slate-600">
             {serviceName}
           </p>
           <div className="bg-slate-100 p-1 px-1.5 font-bold rounded-full text-gray-400 text-xs flex self-center">
-          {rulesCount} {rulesCount > 1 ? "RULES" : "RULE"}
+            {rulesCount} {rulesCount > 1 ? "RULES" : "RULE"}
           </div>
         </div>
 
@@ -84,8 +97,17 @@ export const RulesModal = ({ isOpen, onClose, serviceName, rulesCount, slug , ic
             <div className="flex justify-center items-center h-full">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
             </div>
+          ) : error ? (
+            <div className="flex justify-center items-center h-full  text-gray-500 font-bold flex-col ">
+              <div>
+                {" "}
+                <BiSolidError className="text-9xl text-slate-300" />
+              </div>
+
+              <div>{error}</div>
+            </div>
           ) : (
-            rulesData.map((singleRule, index) => (
+            rulesData?.map((singleRule, index) => (
               <div key={index}>
                 <div className="flex gap-5 py-6">
                   <div className="bg-slate-100 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex justify-center items-center text-slate-500 font-bold">
@@ -112,27 +134,44 @@ export const RulesModal = ({ isOpen, onClose, serviceName, rulesCount, slug , ic
                   <p className="text-xs sm:text-base font-mono">
                     <p style={{ color: "#22863A" }}>
                       - alert:{" "}
-                      <span style={{ color: "#032F62" }}>{singleRule?.alert}</span>
+                      <span style={{ color: "#032F62" }}>
+                        {singleRule?.alert}
+                      </span>
                     </p>
                     <p style={{ color: "#22863A" }} className="ml-6">
-                      expr: <span style={{ color: "#032F62" }}>{singleRule?.expr}</span>
+                      expr:{" "}
+                      <span style={{ color: "#032F62" }}>
+                        {singleRule?.expr}
+                      </span>
                     </p>
                     <p style={{ color: "#22863A" }} className="ml-6">
-                      for: <span style={{ color: "#032F62" }}>{singleRule?.for}</span>
+                      for:{" "}
+                      <span style={{ color: "#032F62" }}>
+                        {singleRule?.for}
+                      </span>
                     </p>
                     <div className="ml-6">
                       <p style={{ color: "#22863A" }}>labels:</p>
                       <p className="ml-6" style={{ color: "#22863A" }}>
-                        severity: <span style={{ color: "#032F62" }}>{singleRule?.labels?.severity}</span>
+                        severity:{" "}
+                        <span style={{ color: "#032F62" }}>
+                          {singleRule?.labels?.severity}
+                        </span>
                       </p>
                     </div>
                     <div className="ml-6">
                       <p style={{ color: "#22863A" }}>annotations:</p>
                       <p className="ml-6" style={{ color: "#22863A" }}>
-                        summary: <span style={{ color: "#032F62" }}>{singleRule?.annotations?.summary}</span>
+                        summary:{" "}
+                        <span style={{ color: "#032F62" }}>
+                          {singleRule?.annotations?.summary}
+                        </span>
                       </p>
                       <p className="ml-6" style={{ color: "#22863A" }}>
-                        description: <span style={{ color: "#032F62" }}>{singleRule?.annotations?.description}</span>
+                        description:{" "}
+                        <span style={{ color: "#032F62" }}>
+                          {singleRule?.annotations?.description}
+                        </span>
                       </p>
                     </div>
                   </p>
