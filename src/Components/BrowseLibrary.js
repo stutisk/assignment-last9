@@ -40,64 +40,65 @@ const BrowseLibrary = () => {
   };
 
   return (
-    <div className="lg:px-32  px-6 mt-12 flex flex-col gap-6">
+    <div className="lg:px-32 px-6 mt-12 flex flex-col gap-6">
       <p className="text-xl font-medium text-slate-600">Browse Library</p>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <div className="min-h-screen">
         <div>
           {data?.groups?.length &&
-            data.groups.slice(0, 2).map((alert, alertIndex) => (
-              <div className="pb-12" key={alertIndex}>
-                <h2 className="text-base font-bold mb-4 uppercase text-slate-400">
-                  {alert.name}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {alert.services
-                    .filter((serviceName) =>
-                      serviceName.name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    )
-                    .slice(0, 8)
-                    .map((serviceName, index) => {
-                      const rules =
-                        serviceName?.exporters?.flatMap(
-                          (exporter) => exporter.rules
-                        ) || [];
-                      const slug =
-                        serviceName?.exporters?.flatMap(
-                          (exporter) => exporter.slug
-                        ) || [];
-                      const rulesCount = rules.length;
+            data.groups.slice(0, 2).map((alert, alertIndex) => {
+              const filteredServices = alert.services.filter((serviceName) =>
+                serviceName.name.toLowerCase().includes(searchTerm.toLowerCase())
+              );
 
-                      return (
-                        <Card
-                          key={index}
-                          rules={rules}
-                          title={serviceName.name}
-                          rulesCount={rulesCount}
-                          onViewRules={() =>
-                            handleViewRules(
-                              serviceName.name,
-                              rulesCount,
-                              rules,
-                              slug,
+              return (
+                <div className="pb-12" key={alertIndex}>
+                  <h2 className="text-base font-bold mb-4 uppercase text-slate-400">
+                    {alert.name}
+                  </h2>
+                  {filteredServices.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {filteredServices.slice(0, 8).map((serviceName, index) => {
+                        const rules =
+                          serviceName?.exporters?.flatMap((exporter) => exporter.rules) || [];
+                        const slug =
+                          serviceName?.exporters?.flatMap((exporter) => exporter.slug) || [];
+                        const rulesCount = rules.length;
+
+                        return (
+                          <Card
+                            key={index}
+                            rules={rules}
+                            title={serviceName.name}
+                            rulesCount={rulesCount}
+                            onViewRules={() =>
+                              handleViewRules(
+                                serviceName.name,
+                                rulesCount,
+                                rules,
+                                slug,
+                                serviceIcons[serviceName.name] || (
+                                  <GiJigsawPiece className="text-slate-400" />
+                                )
+                              )
+                            }
+                            icon={
                               serviceIcons[serviceName.name] || (
                                 <GiJigsawPiece className="text-slate-400" />
                               )
-                            )
-                          }
-                          icon={
-                            serviceIcons[serviceName.name] || (
-                              <GiJigsawPiece className="text-slate-400" />
-                            )
-                          }
-                        />
-                      );
-                    })}
+                            }
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 font-medium">
+                      No components found with the searched name.
+                    </p>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
         <RulesModal
           isOpen={isModalOpen}
